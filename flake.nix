@@ -60,6 +60,9 @@
           rust-bin
 
           cargo-nextest
+
+          pkg-config
+          m4
         ];
       };
     };
