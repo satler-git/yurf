@@ -8,6 +8,8 @@ clap = "4.5.32"
 ltrait-source-desktop = "0.1.0"
 tokio = { version = "1.44.0", features = ["full"] }
 
-ltrait = { git = "https://github.com/ltrait/core" }
-ltrait-ui-tui = { git = "https://github.com/ltrait/ui-tui", version = "0.1.0" }
+# ltrait = { path = "../../ltrait/core" }
+ltrait = "0.4.0"
+# ltrait-ui-tui = { git = "https://github.com/ltrait/ui-tui", version = "0.1.0" }
+# ltrait-ui-tui = { path = "../../ltrait/ui-tui" }
 ltrait-scorer-nucleo = { git = "https://github.com/ltrait/scorer-nucleo", version = "0.1.0" }
