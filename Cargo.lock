@@ -1361,7 +1361,7 @@ dependencies = [
 [[package]]
 name = "ltrait-gen-calc"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/gen-calc#76adc8413ce0cf3809454d0f24b006179a4332f3"
+source = "git+https://github.com/ltrait/gen-calc#1a8fa6af131a052381449bb569bb7226f27afa68"
 dependencies = [
  "kalk",
  "ltrait 0.4.0",
@@ -1677,9 +1677,9 @@ dependencies = [
 
 [[package]]
 name = "once_cell"
-version = "1.21.0"
+version = "1.21.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cde51589ab56b20a6f686b2c68f7a0bd6add753d697abf720d63f8db3ab7b1ad"
+checksum = "d75b0bedcc4fe52caa0e03d9f1151a323e4aa5e2d78ba3580400cd3c9e2bc4bc"
 
 [[package]]
 name = "option-ext"
@@ -3163,6 +3163,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "ltrait 0.4.0",
+ "ltrait-extra",
  "ltrait-gen-calc",
  "ltrait-scorer-nucleo",
  "ltrait-source-desktop",
