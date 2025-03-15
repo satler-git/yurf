@@ -3,11 +3,15 @@ use ltrait::color_eyre::Result;
 use ltrait::{Launcher, Level};
 use ltrait_gen_calc::{Calc, CalcConfig};
 use ltrait_scorer_nucleo::{CaseMatching, Context};
+use ltrait_sorter_frecency::FrecencyConfig;
 use ltrait_source_desktop::DesktopEntry;
 // use ltrait_ui_tui::style::Style;
 // use ltrait_ui_tui::{TuiConfig, TuiEntry};
 use ltrait_extra::sorter::{ReversedSorter, SorterIf};
 
+use std::time::Duration;
+
+#[derive(strum::Display)]
 enum Item {
     Desktop(DesktopEntry),
     Num(u32),
@@ -94,10 +98,31 @@ async fn main() -> Result<()> {
                 },
             },
         )
+        .add_sorter(
+            ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
+                // Duration::from_secs(days * MINS_PER_HOUR * SECS_PER_MINUTE * HOURS_PER_DAY)
+                half_life: Duration::from_secs(30 * 60 * 60 * 24),
+                type_ident: "yurf".into(),
+            })?,
+            |c| ltrait_sorter_frecency::Context {
+                ident: format!("{}-{}", c.to_string(), Into::<String>::into(c)),
+                bonus: 15.,
+            },
+        )
         // .add_filter(ClosureFilter::new(|_, _| false), |_| ())
         // .batch_size(50)
         .batch_size(0)
         .set_ui(DummyUI, |c| c.into())
+        .add_action(
+            ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
+                half_life: Duration::from_secs(30 * 60 * 60 * 24),
+                type_ident: "yurf".into(),
+            })?,
+            |c| ltrait_sorter_frecency::Context {
+                ident: format!("{}-{}", c.to_string(), Into::<String>::into(c)),
+                bonus: 15.,
+            },
+        )
         .add_action(
             ClosureAction::new(|s: &String| {
                 println!("{s}");
