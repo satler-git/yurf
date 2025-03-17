@@ -52,6 +52,16 @@ impl<'a> UI<'a> for DummyUI {
             more = batcher.merge(&mut buf).await?;
             eprintln!("{}", buf.len());
         }
+
+        // デバッグのあと(0.5.0の次のバージョンで修正されたバグ)
+        // more = true;
+        // batcher.input(&mut buf, "firefox".into());
+        //
+        // while more {
+        //     more = batcher.merge(&mut buf).await?;
+        //     eprintln!("{}", buf.len());
+        // }
+
         while let Some(s) = buf.next() {
             eprintln!("{}", s.0);
         }
