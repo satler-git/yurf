@@ -42,7 +42,7 @@ async fn main() -> Result<()> {
 
     let launcher = Launcher::default()
         .add_source(ltrait_source_desktop::new()?, Item::Desktop)
-        .add_source(Box::pin(ltrait::tokio_stream::iter(1..=5000)), Item::Num)
+        .add_source(ltrait::source::from_iter(1..=5000), Item::Num)
         .add_generator(
             Calc::new(CalcConfig::new(
                 (Some('k'), None),

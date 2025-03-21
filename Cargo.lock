@@ -1562,17 +1562,6 @@ dependencies = [
 
 [[package]]
 name = "ltrait"
-version = "0.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3d9d805a1fe8ec02a8af9a9be75347b0a7b15dcdcefd318c7813cfe36cbd1093"
-dependencies = [
- "async-trait",
- "color-eyre",
- "tokio-stream",
-]
-
-[[package]]
-name = "ltrait"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e4fefcaa7cc8dfab67e42163f670dd253a0ffaab438c40477912ee69904d1911"
@@ -1590,7 +1579,7 @@ name = "ltrait-extra"
 version = "0.1.0"
 source = "git+https://github.com/ltrait/extra#c2de2816d3f32a796bcc1331288e051700aab108"
 dependencies = [
- "ltrait 0.8.1",
+ "ltrait",
 ]
 
 [[package]]
@@ -1599,7 +1588,7 @@ version = "0.1.0"
 source = "git+https://github.com/ltrait/gen-calc#d579d5777cdfcd64ae5d2f67eb8af1886861cd02"
 dependencies = [
  "kalk",
- "ltrait 0.8.1",
+ "ltrait",
  "numbat",
 ]
 
@@ -1608,7 +1597,7 @@ name = "ltrait-scorer-nucleo"
 version = "0.1.0"
 source = "git+https://github.com/ltrait/scorer-nucleo#f25453851acdf75b5d4606ecabfe2835941ee4db"
 dependencies = [
- "ltrait 0.8.1",
+ "ltrait",
  "ltrait-extra",
  "nucleo-matcher",
  "thiserror 2.0.12",
@@ -1621,21 +1610,21 @@ source = "git+https://github.com/ltrait/sorter-frecency#03301e97bce957872a11f687
 dependencies = [
  "chrono",
  "dirs 6.0.0",
- "ltrait 0.8.1",
+ "ltrait",
  "rusqlite",
 ]
 
 [[package]]
 name = "ltrait-source-desktop"
-version = "0.1.0"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15a54053f710dd1b9d2ebde1c515bc26c775a02697c0d441ea912b220a9572d3"
+checksum = "c740ff9cf859ec640a7a4ed0be2d89eecf9c28ffc49786f102d502607ef22f76"
 dependencies = [
  "base64",
  "freedesktop-desktop-entry",
  "freedesktop-icons",
  "image",
- "ltrait 0.1.3",
+ "ltrait",
  "thiserror 2.0.12",
 ]
 
@@ -1645,7 +1634,7 @@ version = "0.1.0"
 dependencies = [
  "crossterm",
  "futures",
- "ltrait 0.8.1",
+ "ltrait",
  "ratatui",
  "tokio",
  "tui-input",
@@ -3594,7 +3583,7 @@ name = "yurf"
 version = "0.1.0"
 dependencies = [
  "clap",
- "ltrait 0.8.1",
+ "ltrait",
  "ltrait-extra",
  "ltrait-gen-calc",
  "ltrait-scorer-nucleo",
