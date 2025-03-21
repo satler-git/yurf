@@ -1,17 +1,20 @@
 use ltrait::action::ClosureAction;
 use ltrait::color_eyre::Result;
 use ltrait::{Launcher, Level};
+use ltrait_extra::{
+    filter::FilterIf,
+    sorter::{ReversedSorter, SorterIf},
+};
 use ltrait_gen_calc::{Calc, CalcConfig};
 use ltrait_scorer_nucleo::{CaseMatching, Context};
 use ltrait_sorter_frecency::FrecencyConfig;
 use ltrait_source_desktop::DesktopEntry;
-// use ltrait_ui_tui::style::Style;
-// use ltrait_ui_tui::{TuiConfig, TuiEntry};
-use ltrait_extra::sorter::{ReversedSorter, SorterIf};
+
+use ltrait_ui_tui::{Tui, TuiConfig, TuiEntry, style::Style};
 
 use std::time::Duration;
 
-#[derive(strum::Display)]
+#[derive(strum::Display, Clone)]
 enum Item {
     Desktop(DesktopEntry),
     Num(u32),
@@ -33,53 +36,13 @@ impl Into<String> for &Item {
     }
 }
 
-struct DummyUI;
-
-use ltrait::ui::{Buffer, UI};
-
-impl<'a> UI<'a> for DummyUI {
-    type Context = String;
-
-    async fn run<Cusion: 'a + Send>(
-        &self,
-        mut batcher: ltrait::launcher::batcher::Batcher<'a, Cusion, Self::Context>,
-    ) -> Result<Cusion> {
-        let mut buf = Buffer::default();
-
-        let mut more = true;
-        batcher.input(&mut buf, "firefox".into());
-        while more {
-            more = batcher.merge(&mut buf).await?;
-            eprintln!("{}", buf.len());
-        }
-
-        // デバッグのあと(0.5.0の次のバージョンで修正されたバグ)
-        // more = true;
-        // batcher.input(&mut buf, "firefox".into());
-        //
-        // while more {
-        //     more = batcher.merge(&mut buf).await?;
-        //     eprintln!("{}", buf.len());
-        // }
-
-        while let Some(s) = buf.next() {
-            eprintln!("{}", s.0);
-        }
-        batcher.compute_cusion(0)
-    }
-}
-
 #[tokio::main]
 async fn main() -> Result<()> {
     ltrait::setup(Level::INFO)?;
 
     let launcher = Launcher::default()
-        // .add_source(ltrait_source_desktop::new()?, Item::Desktop) // TODO: 遅い
+        .add_source(ltrait_source_desktop::new()?, Item::Desktop)
         .add_source(Box::pin(ltrait::tokio_stream::iter(1..=5000)), Item::Num)
-        // .add_generator(
-        //     ClosureGenerator::new(|input| vec![input.to_string()]),
-        //     Item::Calc,
-        // )
         .add_generator(
             Calc::new(CalcConfig::new(
                 (Some('k'), None),
@@ -97,16 +60,15 @@ async fn main() -> Result<()> {
                     ltrait_scorer_nucleo::Normalization::Smart,
                 )
                 .into_sorter(),
-                |c: &Context| &c.match_string != "",
-            )),
-            |c| match c {
-                Item::Desktop(_) => Context {
+                |c: &Item| match c {
+                    Item::Desktop(_) => true,
+                    _ => false,
+                },
+                |c: &Item| Context {
                     match_string: c.into(),
                 },
-                _ => Context {
-                    match_string: "".into(),
-                },
-            },
+            )),
+            |c| c.clone(),
         )
         .add_sorter(
             ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
@@ -119,10 +81,28 @@ async fn main() -> Result<()> {
                 bonus: 15.,
             },
         )
-        // .add_filter(ClosureFilter::new(|_, _| false), |_| ())
-        // .batch_size(50)
-        .batch_size(0)
-        .set_ui(DummyUI, |c| c.into())
+        .add_filter(
+            FilterIf::new(
+                ltrait_scorer_nucleo::NucleoMatcher::new(
+                    false,
+                    CaseMatching::Smart,
+                    ltrait_scorer_nucleo::Normalization::Smart,
+                )
+                .into_filter(|score| score >= 100), // TODO: どのくらいの数字がいいのかあんまりよくわかってない
+                |c: &Item| match c {
+                    Item::Desktop(_) => true,
+                    _ => false,
+                },
+                |c: &Item| Context {
+                    match_string: c.into(),
+                },
+            ),
+            |c| c.clone(),
+        )
+        .batch_size(100)
+        .set_ui(Tui::new(TuiConfig::new(12, '>', ' ')), |c| TuiEntry {
+            text: (c.into(), Style::new()),
+        })
         .add_action(
             ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
                 half_life: Duration::from_secs(30 * 60 * 60 * 24),
@@ -140,25 +120,6 @@ async fn main() -> Result<()> {
             }),
             |c| c.into(),
         );
-    // .batch_size(50)
-    // .set_ui(
-    //     ltrait_ui_tui::Tui::new(TuiConfig::new(8, '>', ' ')),
-    //     |cusion| match cusion {
-    //         Item::Desktop(entry) => {
-    //             let entry = &entry.entry;
-    //             TuiEntry {
-    //                 text: (
-    //                     entry
-    //                         .name(&["ja", "en"])
-    //                         .or_else(|| Some(entry.id().into()))
-    //                         .unwrap()
-    //                         .to_string(),
-    //                     Style::default(),
-    //                 ),
-    //             }
-    //         }
-    //     },
-    // );
 
     launcher.run().await?;
 
