@@ -22,4 +22,3 @@ tracing = "0.1.41"
 
 [patch.crates-io]
 ltrait = { git = "https://github.com/ltrait/core" }
-ltrait-ui-tui = { path = "../../ltrait/ui-tui" }

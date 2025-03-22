@@ -1641,7 +1641,7 @@ dependencies = [
 [[package]]
 name = "ltrait-ui-tui"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/ui-tui#fc845390646be84da0523ae8d6e7a5ccbd90dab8"
+source = "git+https://github.com/ltrait/ui-tui#db6e70877bf7d458b2e0effc9f65c916fd76c4af"
 dependencies = [
  "crossterm",
  "futures",
@@ -3731,7 +3731,3 @@ checksum = "99a5bab8d7dedf81405c4bb1f2b83ea057643d9cb28778cea9eecddeedd2e028"
 dependencies = [
  "zune-core",
 ]
-
-[[patch.unused]]
-name = "ltrait-ui-tui"
-version = "0.1.0"
