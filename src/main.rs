@@ -43,7 +43,7 @@ impl Into<String> for &Item {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let _guard = ltrait::setup(Level::DEBUG)?;
+    let _guard = ltrait::setup(Level::INFO)?;
     info!("Tracing has been installed");
 
     let launcher = Launcher::default()
