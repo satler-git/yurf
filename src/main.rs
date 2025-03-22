@@ -14,6 +14,8 @@ use ltrait_ui_tui::{Tui, TuiConfig, TuiEntry, style::Style};
 
 use std::time::Duration;
 
+use tracing::{debug, info};
+
 #[derive(strum::Display, Clone)]
 enum Item {
     Desktop(DesktopEntry),
@@ -38,7 +40,8 @@ impl Into<String> for &Item {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    ltrait::setup(Level::INFO)?;
+    let _guard = ltrait::setup(Level::INFO)?;
+    info!("Tracing has been installed");
 
     let launcher = Launcher::default()
         .add_source(ltrait_source_desktop::new()?, Item::Desktop)
@@ -84,7 +87,10 @@ async fn main() -> Result<()> {
                 CaseMatching::Smart,
                 ltrait_scorer_nucleo::Normalization::Smart,
             )
-            .into_filter(|score| score >= 100), // TODO: どのくらいの数字がいいのかあんまりよくわかってない
+            .into_filter(|score| {
+                debug!("{score}");
+                score >= 100
+            }), // TODO: どのくらいの数字がいいのかあんまりよくわかってない
             |c: &Item| match c {
                 Item::Desktop(_) => true,
                 _ => false,

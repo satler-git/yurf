@@ -1571,9 +1571,9 @@ dependencies = [
 
 [[package]]
 name = "ltrait"
-version = "0.8.3"
+version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7db394a2e409d93854fe9d2f4eb182bb5dcb6c997002b063f76c52b60a623a47"
+checksum = "320462456f29ad248a0f32fafd3f0b7f16b2a036e496013fbd2e7af3c54f70f4"
 dependencies = [
  "async-trait",
  "color-eyre",
@@ -3616,6 +3616,7 @@ dependencies = [
  "ltrait-ui-tui",
  "strum 0.27.1",
  "tokio",
+ "tracing",
 ]
 
 [[package]]
