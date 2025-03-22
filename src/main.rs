@@ -52,24 +52,21 @@ async fn main() -> Result<()> {
             )),
             Item::Calc,
         )
-        .add_sorter(
-            ReversedSorter::new(SorterIf::new(
-                ltrait_scorer_nucleo::NucleoMatcher::new(
-                    false,
-                    CaseMatching::Smart,
-                    ltrait_scorer_nucleo::Normalization::Smart,
-                )
-                .into_sorter(),
-                |c: &Item| match c {
-                    Item::Desktop(_) => true,
-                    _ => false,
-                },
-                |c: &Item| Context {
-                    match_string: c.into(),
-                },
-            )),
-            |c| c.clone(),
-        )
+        .add_raw_sorter(ReversedSorter::new(SorterIf::new(
+            ltrait_scorer_nucleo::NucleoMatcher::new(
+                false,
+                CaseMatching::Smart,
+                ltrait_scorer_nucleo::Normalization::Smart,
+            )
+            .into_sorter(),
+            |c: &Item| match c {
+                Item::Desktop(_) => true,
+                _ => false,
+            },
+            |c: &Item| Context {
+                match_string: c.into(),
+            },
+        )))
         .add_sorter(
             ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
                 // Duration::from_secs(days * MINS_PER_HOUR * SECS_PER_MINUTE * HOURS_PER_DAY)
@@ -81,24 +78,21 @@ async fn main() -> Result<()> {
                 bonus: 15.,
             },
         )
-        .add_filter(
-            FilterIf::new(
-                ltrait_scorer_nucleo::NucleoMatcher::new(
-                    false,
-                    CaseMatching::Smart,
-                    ltrait_scorer_nucleo::Normalization::Smart,
-                )
-                .into_filter(|score| score >= 100), // TODO: どのくらいの数字がいいのかあんまりよくわかってない
-                |c: &Item| match c {
-                    Item::Desktop(_) => true,
-                    _ => false,
-                },
-                |c: &Item| Context {
-                    match_string: c.into(),
-                },
-            ),
-            |c| c.clone(),
-        )
+        .add_raw_filter(FilterIf::new(
+            ltrait_scorer_nucleo::NucleoMatcher::new(
+                false,
+                CaseMatching::Smart,
+                ltrait_scorer_nucleo::Normalization::Smart,
+            )
+            .into_filter(|score| score >= 100), // TODO: どのくらいの数字がいいのかあんまりよくわかってない
+            |c: &Item| match c {
+                Item::Desktop(_) => true,
+                _ => false,
+            },
+            |c: &Item| Context {
+                match_string: c.into(),
+            },
+        ))
         .batch_size(100)
         .set_ui(Tui::new(TuiConfig::new(12, '>', ' ')), |c| TuiEntry {
             text: (c.into(), Style::new()),
