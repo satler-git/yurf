@@ -8,62 +8,82 @@
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
     crane.url = "github:ipetkov/crane";
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
   outputs =
     inputs@{
-      self,
-      nixpkgs,
       crane,
+      flake-parts,
       ...
     }:
-    let
-      system = "x86_64-linux";
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [
+        "x86_64-linux"
+      ];
 
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [
-          inputs.rust-overlay.overlays.default
-        ];
-      };
+      perSystem =
+        {
+          system,
+          pkgs,
+          self',
+          ...
+        }:
+        let
+          rust-bin = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
 
-      rust-bin = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+          craneLib = (crane.mkLib pkgs).overrideToolchain rust-bin;
+          src = craneLib.cleanCargoSource ./.;
 
-      craneLib = (crane.mkLib pkgs).overrideToolchain rust-bin;
-      src = craneLib.cleanCargoSource ./.;
+          commonArgs = {
+            inherit src;
+            strictDeps = true;
 
-      commonArgs = {
-        inherit src;
-        strictDeps = true;
+            buildInputs = with pkgs; [
+              pkg-config
+            ];
 
-        # buildInputs = [ ];
-      };
+            nativeBuildInputs = with pkgs; [
+              m4
+            ];
+          };
 
-      cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+          cargoArtifacts = craneLib.buildDepsOnly commonArgs;
 
-      yurf = craneLib.buildPackage (
-        commonArgs
-        // {
-          inherit cargoArtifacts;
-        }
-      );
-    in
-    {
-      packages = {
-        default = yurf;
-      };
+          yurf = craneLib.buildPackage (
+            commonArgs
+            // {
+              inherit cargoArtifacts;
+            }
+          );
+        in
+        {
 
-      devShells.${system}.default = pkgs.mkShell {
-        name = "ltrait";
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [
+              inputs.rust-overlay.overlays.default
+            ];
+          };
 
-        buildInputs = with pkgs; [
-          rust-bin
+          packages = {
+            default = yurf;
+          };
 
-          cargo-nextest
+          devShells.default = pkgs.mkShell {
+            inputsFrom = [
+              self'.packages.default
+            ];
 
-          pkg-config
-          m4
-        ];
-      };
+            name = "ltrait";
+
+            buildInputs = with pkgs; [
+              rust-bin
+
+              cargo-nextest
+            ];
+          };
+        };
     };
 }

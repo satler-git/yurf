@@ -20,3 +20,5 @@ target/
 
 /target
 .pre-commit-config.yaml
+
+result
