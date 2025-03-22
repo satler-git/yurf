@@ -1571,9 +1571,8 @@ dependencies = [
 
 [[package]]
 name = "ltrait"
-version = "0.8.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "320462456f29ad248a0f32fafd3f0b7f16b2a036e496013fbd2e7af3c54f70f4"
+version = "0.8.5"
+source = "git+https://github.com/ltrait/core#91f90dc35d7726b0839e075a71edd252c9e753ca"
 dependencies = [
  "async-trait",
  "color-eyre",
@@ -1627,9 +1626,9 @@ dependencies = [
 
 [[package]]
 name = "ltrait-source-desktop"
-version = "0.2.0"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c740ff9cf859ec640a7a4ed0be2d89eecf9c28ffc49786f102d502607ef22f76"
+checksum = "9d238d1c3a6afa24c0e5f217d0d8367fdae1cd3d9fd11275a978897005ca37f9"
 dependencies = [
  "base64",
  "freedesktop-desktop-entry",
@@ -1642,6 +1641,7 @@ dependencies = [
 [[package]]
 name = "ltrait-ui-tui"
 version = "0.1.0"
+source = "git+https://github.com/ltrait/ui-tui#fc845390646be84da0523ae8d6e7a5ccbd90dab8"
 dependencies = [
  "crossterm",
  "futures",
@@ -3731,3 +3731,7 @@ checksum = "99a5bab8d7dedf81405c4bb1f2b83ea057643d9cb28778cea9eecddeedd2e028"
 dependencies = [
  "zune-core",
 ]
+
+[[patch.unused]]
+name = "ltrait-ui-tui"
+version = "0.1.0"

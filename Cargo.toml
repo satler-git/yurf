@@ -8,13 +8,18 @@ clap = "4.5.32"
 
 tokio = { version = "1.44.0", features = ["full"] }
 
-ltrait = "0.8.4"
+ltrait = "0.8.5"
 ltrait-extra = { git = "https://github.com/ltrait/extra" }
 ltrait-gen-calc = { git = "https://github.com/ltrait/gen-calc" }
 ltrait-scorer-nucleo = { git = "https://github.com/ltrait/scorer-nucleo" }
 ltrait-sorter-frecency = { git = "https://github.com/ltrait/sorter-frecency" }
-ltrait-source-desktop = "0.2.0"
-ltrait-ui-tui = { path = "../../ltrait/ui-tui" }
+ltrait-source-desktop = "0.3.0"
+ltrait-ui-tui = { git = "https://github.com/ltrait/ui-tui" }
 
 strum = { version = "0.27.1", features = ["derive"] }
 tracing = "0.1.41"
+
+
+[patch.crates-io]
+ltrait = { git = "https://github.com/ltrait/core" }
+ltrait-ui-tui = { path = "../../ltrait/ui-tui" }
