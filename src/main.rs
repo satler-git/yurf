@@ -46,7 +46,6 @@ async fn main() -> Result<()> {
     let _guard = ltrait::setup(Level::DEBUG)?;
     info!("Tracing has been installed");
 
-    // 今のsorterだと、score大きいのが後ろになって、思っているのと違う挙動をすることが多い。変えてもいい
     let launcher = Launcher::default()
         .add_source(
             ltrait_source_desktop::new(ltrait_source_desktop::default_paths().skip(1))?,
@@ -62,7 +61,7 @@ async fn main() -> Result<()> {
             )),
             Item::Calc,
         )
-        .add_raw_sorter(ReversedSorter::new(SorterIf::new(
+        .add_raw_sorter(SorterIf::new(
             ltrait_scorer_nucleo::NucleoMatcher::new(
                 false,
                 CaseMatching::Smart,
@@ -76,13 +75,13 @@ async fn main() -> Result<()> {
             |c: &Item| Context {
                 match_string: c.into(),
             },
-        )))
+        ))
         .add_sorter(
-            ReversedSorter::new(ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
+            ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
                 // Duration::from_secs(days * MINS_PER_HOUR * SECS_PER_MINUTE * HOURS_PER_DAY)
                 half_life: Duration::from_secs(30 * 60 * 60 * 24),
                 type_ident: "yurf".into(),
-            })?),
+            })?,
             |c| ltrait_sorter_frecency::Context {
                 ident: format!("{}-{}", c.to_string(), Into::<String>::into(c)),
                 bonus: 15.,
