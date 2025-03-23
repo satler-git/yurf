@@ -1406,15 +1406,15 @@ dependencies = [
 
 [[package]]
 name = "jiff-tzdb"
-version = "0.1.3"
+version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "962e1dfe9b2d75a84536cf5bf5eaaa4319aa7906c7160134a22883ac316d5f31"
+checksum = "c1283705eb0a21404d2bfd6eef2a7593d240bc42a0bdb39db0ad6fa2ec026524"
 
 [[package]]
 name = "jiff-tzdb-platform"
-version = "0.1.2"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a63c62e404e7b92979d2792352d885a7f8f83fd1d0d31eea582d77b2ceca697e"
+checksum = "875a5a69ac2bab1a891711cf5eccbec1ce0341ea805560dcd90b7a2e925132e8"
 dependencies = [
  "jiff-tzdb",
 ]
@@ -1587,9 +1587,9 @@ dependencies = [
 
 [[package]]
 name = "ltrait"
-version = "0.9.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ebdd1d67f15af0be71443c9390932f32fc9948d4f33ec983ebdb3c6496a62b79"
+checksum = "28e8b7b514a2708fd833a9ee4b1dbf265ed8bf080b6b4f7ee40e4db5eed731c1"
 dependencies = [
  "async-trait",
  "color-eyre",
@@ -1604,27 +1604,27 @@ dependencies = [
 [[package]]
 name = "ltrait-extra"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/extra#a51e88d86d64528f4a097909d113b45530a5d049"
+source = "git+https://github.com/ltrait/extra#df48536eac27c3d6c3acc54eacdd6301c9d5e03e"
 dependencies = [
- "ltrait 0.9.0",
+ "ltrait 0.10.0",
 ]
 
 [[package]]
 name = "ltrait-gen-calc"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/gen-calc#098d37d4ee504b7e09c84b721492d1a8d0f45771"
+source = "git+https://github.com/ltrait/gen-calc#676b4f6d26f58c887c8ad99b7ee2d295e60245f4"
 dependencies = [
  "kalk",
- "ltrait 0.9.0",
+ "ltrait 0.10.0",
  "numbat",
 ]
 
 [[package]]
 name = "ltrait-scorer-nucleo"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/scorer-nucleo#41d7814be2c7dad24e78f53b2b5726db63d9d404"
+source = "git+https://github.com/ltrait/scorer-nucleo#e605425f9159925c0c99d92438128050324fab81"
 dependencies = [
- "ltrait 0.9.0",
+ "ltrait 0.10.0",
  "ltrait-extra",
  "nucleo-matcher",
  "thiserror 2.0.12",
@@ -1633,11 +1633,11 @@ dependencies = [
 [[package]]
 name = "ltrait-sorter-frecency"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/sorter-frecency#d9b3a9240d650e3b8d36088afaed971220fe922f"
+source = "git+https://github.com/ltrait/sorter-frecency#b6293a2817b10c393f4f39473d4934ec99f3c5a2"
 dependencies = [
  "chrono",
  "dirs 6.0.0",
- "ltrait 0.9.0",
+ "ltrait 0.10.0",
  "rusqlite",
 ]
 
@@ -1658,10 +1658,11 @@ dependencies = [
 [[package]]
 name = "ltrait-ui-tui"
 version = "0.1.0"
+source = "git+https://github.com/ltrait/ui-tui#f0b06199e967f7873dbb53ad787f7f99b5c4ee3b"
 dependencies = [
  "crossterm",
  "futures",
- "ltrait 0.9.0",
+ "ltrait 0.10.0",
  "ratatui",
  "tokio",
  "tracing",
@@ -3623,7 +3624,7 @@ name = "yurf"
 version = "0.1.0"
 dependencies = [
  "clap",
- "ltrait 0.9.0",
+ "ltrait 0.10.0",
  "ltrait-extra",
  "ltrait-gen-calc",
  "ltrait-scorer-nucleo",
