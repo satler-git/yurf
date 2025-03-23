@@ -21,7 +21,7 @@ use std::time::Duration;
 
 use tracing::info;
 
-#[derive(strum::Display, Clone)]
+#[derive(strum::Display, strum::EnumIs, Clone)]
 enum Item {
     Desktop(DesktopEntry),
     Calc(String),
@@ -68,10 +68,7 @@ async fn main() -> Result<()> {
                 ltrait_scorer_nucleo::Normalization::Smart,
             )
             .into_sorter(),
-            |c: &Item| match c {
-                Item::Desktop(_) => true,
-                _ => false,
-            },
+            Item::is_desktop,
             |c: &Item| Context {
                 match_string: c.into(),
             },
