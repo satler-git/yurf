@@ -40,11 +40,8 @@
             inherit src;
             strictDeps = true;
 
-            buildInputs = with pkgs; [
-              pkg-config
-            ];
-
             nativeBuildInputs = with pkgs; [
+              pkg-config
               m4
             ];
           };
