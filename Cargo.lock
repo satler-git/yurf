@@ -1658,7 +1658,6 @@ dependencies = [
 [[package]]
 name = "ltrait-ui-tui"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/ui-tui#a6188d79c3fdf7f095518848ed968d12a7c95595"
 dependencies = [
  "crossterm",
  "futures",

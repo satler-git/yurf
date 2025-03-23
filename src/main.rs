@@ -111,9 +111,17 @@ async fn main() -> Result<()> {
         //     },
         // ))
         .batch_size(100)
-        .set_ui(Tui::new(TuiConfig::new(12, '>', ' ')), |c| TuiEntry {
-            text: (c.into(), Style::new()),
-        })
+        .set_ui(
+            Tui::new(TuiConfig::new(
+                ltrait_ui_tui::Viewport::Inline(12),
+                // ltrait_ui_tui::Viewport::Fullscreen,
+                '>',
+                ' ',
+            )),
+            |c| TuiEntry {
+                text: (c.into(), Style::new()),
+            },
+        )
         .add_action(
             ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
                 half_life: Duration::from_secs(30 * 60 * 60 * 24),
