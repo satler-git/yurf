@@ -639,9 +639,9 @@ dependencies = [
 
 [[package]]
 name = "deranged"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c9e6a11ca8224451684bc0d7d5a7adbf8f2fd6887261a1cfc3c0432f9d4068e"
+checksum = "28cfac68e08048ae1883171632c2aef3ebc555621ae56fbccce1cbf22dd7f058"
 dependencies = [
  "powerfmt",
  "serde",
@@ -1600,9 +1600,9 @@ dependencies = [
 
 [[package]]
 name = "ltrait"
-version = "0.10.0"
+version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "28e8b7b514a2708fd833a9ee4b1dbf265ed8bf080b6b4f7ee40e4db5eed731c1"
+checksum = "afe2e14b8b4859b19919af1a772392dea90ac36c67c7c73fabcca2883dec9796"
 dependencies = [
  "async-trait",
  "color-eyre",
@@ -1619,7 +1619,7 @@ name = "ltrait-extra"
 version = "0.1.0"
 source = "git+https://github.com/ltrait/extra#df48536eac27c3d6c3acc54eacdd6301c9d5e03e"
 dependencies = [
- "ltrait 0.10.0",
+ "ltrait 0.10.1",
 ]
 
 [[package]]
@@ -1628,7 +1628,7 @@ version = "0.1.0"
 source = "git+https://github.com/ltrait/gen-calc#676b4f6d26f58c887c8ad99b7ee2d295e60245f4"
 dependencies = [
  "kalk",
- "ltrait 0.10.0",
+ "ltrait 0.10.1",
  "numbat",
 ]
 
@@ -1637,7 +1637,7 @@ name = "ltrait-scorer-nucleo"
 version = "0.1.0"
 source = "git+https://github.com/ltrait/scorer-nucleo#e605425f9159925c0c99d92438128050324fab81"
 dependencies = [
- "ltrait 0.10.0",
+ "ltrait 0.10.1",
  "ltrait-extra",
  "nucleo-matcher",
  "thiserror 2.0.12",
@@ -1650,7 +1650,7 @@ source = "git+https://github.com/ltrait/sorter-frecency#b6293a2817b10c393f4f3947
 dependencies = [
  "chrono",
  "dirs 6.0.0",
- "ltrait 0.10.0",
+ "ltrait 0.10.1",
  "rusqlite",
 ]
 
@@ -1671,11 +1671,11 @@ dependencies = [
 [[package]]
 name = "ltrait-ui-tui"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/ui-tui#f0b06199e967f7873dbb53ad787f7f99b5c4ee3b"
+source = "git+https://github.com/ltrait/ui-tui#a68e5288bc589acfe817214cfe11075c037f2bdf"
 dependencies = [
  "crossterm",
  "futures",
- "ltrait 0.10.0",
+ "ltrait 0.10.1",
  "ratatui",
  "tokio",
  "tracing",
@@ -2960,9 +2960,9 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.3.40"
+version = "0.3.41"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d9c75b47bdff86fa3334a3db91356b8d7d86a9b839dab7d0bdc5c3d3a077618"
+checksum = "8a7619e19bc266e0f9c5e6686659d394bc57973859340060a69221e57dbc0c40"
 dependencies = [
  "deranged",
  "itoa",
@@ -2983,9 +2983,9 @@ checksum = "c9e9a38711f559d9e3ce1cdb06dd7c5b8ea546bc90052da6d06bb76da74bb07c"
 
 [[package]]
 name = "time-macros"
-version = "0.2.21"
+version = "0.2.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "29aa485584182073ed57fd5004aa09c371f021325014694e432313345865fd04"
+checksum = "3526739392ec93fd8b359c8e98514cb3e8e021beb4e5f597b00a0221f8ed8a49"
 dependencies = [
  "num-conv",
  "time-core",
@@ -3637,7 +3637,7 @@ name = "yurf"
 version = "0.1.0"
 dependencies = [
  "clap",
- "ltrait 0.10.0",
+ "ltrait 0.10.1",
  "ltrait-extra",
  "ltrait-gen-calc",
  "ltrait-scorer-nucleo",
