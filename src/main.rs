@@ -137,6 +137,7 @@ async fn main() -> Result<()> {
                 },
                 '>',
                 ' ',
+                ltrait_ui_tui::sample_keyconfig,
             )),
             |c| TuiEntry {
                 text: (c.into(), Style::new()),
