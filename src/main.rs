@@ -41,8 +41,25 @@ impl Into<String> for &Item {
     }
 }
 
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    /// Display on full screen on the terminal when TUI
+    #[arg(short, long, conflicts_with = "inline")]
+    fullscreen: bool,
+
+    /// How many lines to display when not in Fullscreen
+    #[arg(short, long, default_value_t = 12)]
+    inline: u16,
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
+    // let args = Args::try_parse().wrap_err("failed to parse args")?;
+    let args = Args::parse();
+
     let _guard = ltrait::setup(Level::INFO)?;
     info!("Tracing has been installed");
 
@@ -113,8 +130,11 @@ async fn main() -> Result<()> {
         .batch_size(100)
         .set_ui(
             Tui::new(TuiConfig::new(
-                ltrait_ui_tui::Viewport::Inline(12),
-                // ltrait_ui_tui::Viewport::Fullscreen,
+                if !args.fullscreen {
+                    ltrait_ui_tui::Viewport::Inline(12)
+                } else {
+                    ltrait_ui_tui::Viewport::Fullscreen
+                },
                 '>',
                 ' ',
             )),

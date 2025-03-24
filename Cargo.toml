@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-clap = "4.5.32"
+clap = { version = "4.5.32", features = ["derive"] }
 
 tokio = { version = "1.44.0", features = ["full"] }
 
