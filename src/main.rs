@@ -154,6 +154,7 @@ async fn main() -> Result<()> {
         )
         .add_raw_action(ClosureAction::new(|c| {
             if let Item::Desktop(d) = c {
+                use std::os::unix::process::CommandExt;
                 use std::process::{Command, Stdio};
 
                 let cmd = d.entry.parse_exec().wrap_err("failed to parse exec")?;
@@ -163,6 +164,7 @@ async fn main() -> Result<()> {
                     .stdin(Stdio::null())
                     .stdout(Stdio::null())
                     .stderr(Stdio::null())
+                    .process_group(0)
                     .spawn()
                     .wrap_err("failed to start the selected app")?;
             }
