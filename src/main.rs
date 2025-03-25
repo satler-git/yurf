@@ -21,6 +21,9 @@ use std::time::Duration;
 
 use tracing::info;
 
+use tikv_jemallocator::Jemalloc;
+static GLOBAL: Jemalloc = Jemalloc;
+
 #[derive(strum::Display, strum::EnumIs, Clone)]
 enum Item {
     Desktop(DesktopEntry),
