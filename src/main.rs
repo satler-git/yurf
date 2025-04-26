@@ -1,33 +1,38 @@
-use ltrait::action::ClosureAction;
-use ltrait::color_eyre::Result;
-use ltrait::color_eyre::eyre::WrapErr;
-use ltrait::filter::ClosureFilter;
-#[allow(unused_imports)]
-use ltrait::sorter::ClosureSorter;
-use ltrait::{Launcher, Level};
-#[allow(unused_imports)]
-use ltrait_extra::{
-    filter::FilterIf,
-    sorter::{ReversedSorter, SorterIf},
+use ltrait::{
+    Launcher, Level,
+    action::ClosureAction,
+    color_eyre::{Result, eyre::WrapErr},
+    filter::ClosureFilter,
 };
+
+use ltrait_extra::{scorer::ScorerExt as _, sorter::SorterExt as _};
 use ltrait_gen_calc::{Calc, CalcConfig};
 use ltrait_scorer_nucleo::{CaseMatching, Context};
 use ltrait_sorter_frecency::FrecencyConfig;
 use ltrait_source_desktop::DesktopEntry;
-
 use ltrait_ui_tui::{Tui, TuiConfig, TuiEntry, style::Style};
 
-use std::time::Duration;
+use std::{io, time::Duration};
 
 use tracing::info;
 
 use tikv_jemallocator::Jemalloc;
+#[global_allocator]
 static GLOBAL: Jemalloc = Jemalloc;
+
+#[derive(Debug, Clone)]
+struct Task {
+    name: String,
+    command: String,
+    need_confirm: bool,
+}
 
 #[derive(strum::Display, strum::EnumIs, Clone)]
 enum Item {
     Desktop(DesktopEntry),
     Calc(String),
+    Stdin(String),
+    Task(Task),
 }
 
 impl Into<String> for &Item {
@@ -40,15 +45,20 @@ impl Into<String> for &Item {
                 .unwrap()
                 .into(),
             Item::Calc(s) => s.into(),
+            Item::Stdin(s) => s.into(),
+            Item::Task(s) => s.name.clone(),
         }
     }
 }
 
-use clap::Parser;
+use clap::{Parser, Subcommand};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
+    #[command(subcommand)]
+    command: Commands,
+
     /// Display on full screen on the terminal when TUI
     #[arg(short, long, conflicts_with = "inline")]
     fullscreen: bool,
@@ -56,6 +66,24 @@ struct Args {
     /// How many lines to display when not in Fullscreen
     #[arg(short, long, default_value_t = 12)]
     inline: u16,
+}
+
+#[derive(Subcommand, Debug, strum::EnumIs)]
+enum Commands {
+    Task,
+    Launch,
+    Stdin,
+}
+
+impl Commands {
+    fn type_ident(&self) -> String {
+        match self {
+            Commands::Task => "yurf-task",
+            Commands::Launch => "yurf",
+            _ => "",
+        }
+        .into()
+    }
 }
 
 #[tokio::main]
@@ -66,71 +94,22 @@ async fn main() -> Result<()> {
     let _guard = ltrait::setup(Level::INFO)?;
     info!("Tracing has been installed");
 
-    let launcher = Launcher::default()
-        .add_source(
-            ltrait_source_desktop::new(ltrait_source_desktop::default_paths().skip(1))?,
-            Item::Desktop,
-        )
-        // .add_source(ltrait::source::from_iter(1..=5000), Item::Num)
-        .add_generator(
-            Calc::new(CalcConfig::new(
-                (Some('k'), None),
-                None,
-                None, // 精度
-                None,
-            )),
-            Item::Calc,
-        )
-        .add_raw_sorter(SorterIf::new(
+    let mut launcher = Launcher::default()
+        .add_raw_sorter(
             ltrait_scorer_nucleo::NucleoMatcher::new(
                 false,
                 CaseMatching::Smart,
                 ltrait_scorer_nucleo::Normalization::Smart,
             )
-            .into_sorter(),
-            Item::is_desktop,
-            |c: &Item| Context {
-                match_string: c.into(),
-            },
-        ))
-        .add_sorter(
-            ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
-                // Duration::from_secs(days * MINS_PER_HOUR * SECS_PER_MINUTE * HOURS_PER_DAY)
-                half_life: Duration::from_secs(30 * 60 * 60 * 24),
-                type_ident: "yurf".into(),
-            })?,
-            |c| ltrait_sorter_frecency::Context {
-                ident: format!("{}-{}", c.to_string(), Into::<String>::into(c)),
-                bonus: 15.,
-            },
+            .into_sorter()
+            .to_if(
+                |c| !Item::is_calc(c),
+                |c: &Item| Context {
+                    match_string: c.into(),
+                },
+            ),
         )
-        .add_raw_filter(ClosureFilter::new(|c, _| {
-            if let Item::Desktop(d) = c {
-                !d.entry.no_display() && d.entry.exec().is_some()
-            } else {
-                true
-            }
-        }))
-        // .add_raw_filter(FilterIf::new(
-        //     ltrait_scorer_nucleo::NucleoMatcher::new(
-        //         false,
-        //         CaseMatching::Smart,
-        //         ltrait_scorer_nucleo::Normalization::Smart,
-        //     )
-        //     .into_filter(|score| {
-        //         debug!("{score}");
-        //         score >= 100
-        //     }), // TO/DO: どのくらいの数字がいいのかあんまりよくわかってない
-        //     |c: &Item| match c {
-        //         // Item::Desktop(_) => true,
-        //         // _ => false,
-        //         _ => true,
-        //     },
-        //     |c: &Item| Context {
-        //         match_string: c.into(),
-        //     },
-        // ))
-        .batch_size(100)
+        .batch_size(1000)
         .set_ui(
             Tui::new(TuiConfig::new(
                 if !args.fullscreen {
@@ -145,36 +124,164 @@ async fn main() -> Result<()> {
             |c| TuiEntry {
                 text: (c.into(), Style::new()),
             },
-        )
-        .add_action(
-            ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
-                half_life: Duration::from_secs(30 * 60 * 60 * 24),
-                type_ident: "yurf".into(),
-            })?,
-            |c| ltrait_sorter_frecency::Context {
-                ident: format!("{}-{}", c.to_string(), Into::<String>::into(c)),
-                bonus: 15.,
-            },
-        )
-        .add_raw_action(ClosureAction::new(|c| {
-            if let Item::Desktop(d) = c {
-                use std::os::unix::process::CommandExt;
-                use std::process::{Command, Stdio};
+        );
 
-                let cmd = d.entry.parse_exec().wrap_err("failed to parse exec")?;
+    if !args.command.is_stdin() {
+        launcher = launcher
+            .add_raw_sorter(
+                ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
+                    // Duration::from_secs(days * MINS_PER_HOUR * SECS_PER_MINUTE * HOURS_PER_DAY)
+                    half_life: Duration::from_secs(30 * 60 * 60 * 24),
+                    type_ident: args.command.type_ident(),
+                })?
+                .to_if(
+                    |c| !Item::is_calc(c),
+                    |c: &Item| ltrait_sorter_frecency::Context {
+                        ident: format!("{}-{}", c.to_string(), Into::<String>::into(c)),
+                        bonus: 15.,
+                    },
+                ),
+            )
+            .add_action(
+                ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
+                    half_life: Duration::from_secs(30 * 60 * 60 * 24),
+                    type_ident: args.command.type_ident(),
+                })?,
+                |c| ltrait_sorter_frecency::Context {
+                    ident: format!("{}-{}", c.to_string(), Into::<String>::into(c)),
+                    bonus: 15.,
+                },
+            );
+    }
 
-                Command::new(&cmd[0])
-                    .args(&cmd[1..])
-                    .stdin(Stdio::null())
-                    .stdout(Stdio::null())
-                    .stderr(Stdio::null())
-                    .process_group(0)
-                    .spawn()
-                    .wrap_err("failed to start the selected app")?;
+    match args.command {
+        Commands::Stdin => {
+            pub fn new<'a>() -> ltrait::source::Source<'a, String> {
+                let lines: Vec<_> = io::stdin().lines().filter_map(|c| c.ok()).collect();
+
+                Box::pin(ltrait::tokio_stream::iter(lines))
             }
 
-            Ok(())
-        }));
+            launcher = launcher
+                .add_source(new(), Item::Stdin)
+                .add_raw_action(ClosureAction::new(|c: &Item| {
+                    println!("{}", <&Item as Into<String>>::into(c));
+                    Ok(())
+                }));
+        }
+        Commands::Task => {
+            let tasks = vec![
+                // TODO: 将来的にはWaylougoutみたいなやつのreplace
+                // TODO: confirmは落ちる。popupみたいな感じにするかいい感じにしないとだめ。
+                Task {
+                    name: "light: Increase by 10".into(),
+                    command: "light -A 10".into(),
+                    need_confirm: false,
+                },
+                Task {
+                    name: "light: Decrease by 10".into(),
+                    command: "light -U 10".into(),
+                    need_confirm: false,
+                },
+                Task {
+                    name: "hyprsunset: reset".into(),
+                    command: "hyprctl hyprsunset identity".into(),
+                    need_confirm: false,
+                },
+                Task {
+                    name: "hyprsunset: sunset".into(),
+                    command: "hyprctl hyprsunset temperature 2500".into(),
+                    need_confirm: false,
+                },
+            ];
+
+            launcher = launcher
+                .add_source(Box::pin(ltrait::tokio_stream::iter(tasks)), Item::Task)
+                .add_raw_action(ClosureAction::new(|c| {
+                    if let Item::Task(t) = c {
+                        use std::io::Write;
+                        use std::os::unix::process::CommandExt;
+                        use std::process::{Command, Stdio};
+
+                        if t.need_confirm {
+                            let exe_path = std::env::current_exe()?;
+
+                            let mut child = Command::new(&exe_path)
+                                .arg("stdin")
+                                .stdin(Stdio::piped())
+                                .stdout(Stdio::piped())
+                                .spawn()?;
+
+                            if let Some(mut stdin) = child.stdin.take() {
+                                stdin.write_all(b"yes\nno")?;
+                            }
+                            let output = child.wait_with_output()?;
+                            let stdout_str =
+                                String::from_utf8(output.stdout).expect("Invalid UTF-8 in stdout");
+                            if &stdout_str != "yes\n" {
+                                return Ok(());
+                            }
+                        }
+
+                        let cmd = t.command.clone();
+                        let cmd = cmd.split_whitespace().collect::<Vec<&str>>();
+
+                        Command::new(&cmd[0])
+                            .args(&cmd[1..])
+                            .stdin(Stdio::null())
+                            .stdout(Stdio::null())
+                            .stderr(Stdio::null())
+                            .process_group(0)
+                            .spawn()
+                            .wrap_err("failed to start the selected app")?;
+                    }
+
+                    Ok(())
+                }));
+        }
+        Commands::Launch => {
+            launcher = launcher
+                .add_source(
+                    ltrait_source_desktop::new(ltrait_source_desktop::default_paths().skip(1))?,
+                    Item::Desktop,
+                )
+                .add_raw_filter(ClosureFilter::new(|c, _| {
+                    if let Item::Desktop(d) = c {
+                        !d.entry.no_display() && d.entry.exec().is_some()
+                    } else {
+                        true
+                    }
+                }))
+                .add_generator(
+                    Calc::new(CalcConfig::new(
+                        (Some('k'), None),
+                        None,
+                        None, // 精度
+                        None,
+                    )),
+                    Item::Calc,
+                )
+                .add_raw_action(ClosureAction::new(|c| {
+                    if let Item::Desktop(d) = c {
+                        use std::os::unix::process::CommandExt;
+                        use std::process::{Command, Stdio};
+
+                        let cmd = d.entry.parse_exec().wrap_err("failed to parse exec")?;
+
+                        Command::new(&cmd[0])
+                            .args(&cmd[1..])
+                            .stdin(Stdio::null())
+                            .stdout(Stdio::null())
+                            .stderr(Stdio::null())
+                            .process_group(0)
+                            .spawn()
+                            .wrap_err("failed to start the selected app")?;
+                    }
+
+                    Ok(())
+                }));
+        }
+    }
 
     launcher.run().await?;
 

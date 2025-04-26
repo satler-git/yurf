@@ -42,7 +42,12 @@
 
             nativeBuildInputs = with pkgs; [
               pkg-config
+
               m4
+              gmp
+              mpfr
+              libmpc
+              gmp.dev
             ];
           };
 
