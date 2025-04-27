@@ -184,7 +184,7 @@ async fn main() -> Result<()> {
                 .join("yurf")
                 .join("config.toml");
 
-            let toml_str = std::fs::read_to_string(cfg)?;
+            let toml_str = std::fs::read_to_string(cfg).unwrap_or_default();
 
             let config: Config = toml::from_str(&toml_str)?;
 
