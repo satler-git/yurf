@@ -23,6 +23,14 @@
         "x86_64-linux"
       ];
 
+      flake = {
+        homeManagerModules = rec {
+          default = yurf;
+
+          yurf = ./modules/home-manager/default.nix;
+        };
+      };
+
       perSystem =
         {
           system,

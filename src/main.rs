@@ -20,11 +20,18 @@ use tikv_jemallocator::Jemalloc;
 #[global_allocator]
 static GLOBAL: Jemalloc = Jemalloc;
 
-#[derive(Debug, Clone)]
+use serde::Deserialize;
+
+#[derive(Debug, Clone, Deserialize)]
 struct Task {
     name: String,
     command: String,
     need_confirm: bool,
+}
+
+#[derive(Deserialize, Debug)]
+struct Config {
+    task: Vec<Task>,
 }
 
 #[derive(strum::Display, strum::EnumIs, Clone)]
@@ -170,33 +177,45 @@ async fn main() -> Result<()> {
                 }));
         }
         Commands::Task => {
-            let tasks = vec![
-                // TODO: 将来的にはWaylougoutみたいなやつのreplace
-                // TODO: confirmは落ちる。popupみたいな感じにするかいい感じにしないとだめ。
-                Task {
-                    name: "light: Increase by 10".into(),
-                    command: "light -A 10".into(),
-                    need_confirm: false,
-                },
-                Task {
-                    name: "light: Decrease by 10".into(),
-                    command: "light -U 10".into(),
-                    need_confirm: false,
-                },
-                Task {
-                    name: "hyprsunset: reset".into(),
-                    command: "hyprctl hyprsunset identity".into(),
-                    need_confirm: false,
-                },
-                Task {
-                    name: "hyprsunset: sunset".into(),
-                    command: "hyprctl hyprsunset temperature 2500".into(),
-                    need_confirm: false,
-                },
-            ];
+            // TODO: 将来的にはWaylougoutみたいなやつのreplace
+            // TODO: confirmは落ちる。popupみたいな感じにするかいい感じにしないとだめ。
+            let cfg = dirs::config_dir()
+                .expect("Could not find config directory")
+                .join("yurf")
+                .join("config.toml");
+
+            let toml_str = std::fs::read_to_string(cfg)?;
+
+            let config: Config = toml::from_str(&toml_str)?;
+
+            // let tasks = vec![
+            //     Task {
+            //         name: "light: Increase by 10".into(),
+            //         command: "light -A 10".into(),
+            //         need_confirm: false,
+            //     },
+            //     Task {
+            //         name: "light: Decrease by 10".into(),
+            //         command: "light -U 10".into(),
+            //         need_confirm: false,
+            //     },
+            //     Task {
+            //         name: "hyprsunset: reset".into(),
+            //         command: "hyprctl hyprsunset identity".into(),
+            //         need_confirm: false,
+            //     },
+            //     Task {
+            //         name: "hyprsunset: sunset".into(),
+            //         command: "hyprctl hyprsunset temperature 2500".into(),
+            //         need_confirm: false,
+            //     },
+            // ];
 
             launcher = launcher
-                .add_source(Box::pin(ltrait::tokio_stream::iter(tasks)), Item::Task)
+                .add_source(
+                    Box::pin(ltrait::tokio_stream::iter(config.task)),
+                    Item::Task,
+                )
                 .add_raw_action(ClosureAction::new(|c| {
                     if let Item::Task(t) = c {
                         use std::io::Write;
