@@ -12,6 +12,16 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
+  nixConfig = {
+    extra-substituters = [
+      "https://satler.cachix.org"
+    ];
+
+    extra-trusted-public-keys = [
+      "satler.cachix.org-1:qPh5WfP6bZGq/dGK4DsoYRfZqbDAxPwO9l8v+x+ET04="
+    ];
+  };
+
   outputs =
     inputs@{
       crane,
