@@ -73,7 +73,7 @@ in
     home.packages = [ cfg.package ];
     xdg.configFile."yurf/config.toml" = {
       source = pkgs.writers.writeTOML "yurf-config.toml" {
-        task = cfg.tasks;
+        inherit (cfg) task;
       };
     };
   };
