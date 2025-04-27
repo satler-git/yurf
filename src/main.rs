@@ -42,9 +42,9 @@ enum Item {
     Task(Task),
 }
 
-impl Into<String> for &Item {
-    fn into(self) -> String {
-        match self {
+impl From<&Item> for String {
+    fn from(val: &Item) -> Self {
+        match val {
             Item::Desktop(e) => e
                 .entry
                 .name(&[/* "ja", */ "en"])
@@ -144,7 +144,7 @@ async fn main() -> Result<()> {
                 .to_if(
                     |c| !Item::is_calc(c),
                     |c: &Item| ltrait_sorter_frecency::Context {
-                        ident: format!("{}-{}", c.to_string(), Into::<String>::into(c)),
+                        ident: format!("{}-{}", c, Into::<String>::into(c)),
                         bonus: 15.,
                     },
                 ),
@@ -155,7 +155,7 @@ async fn main() -> Result<()> {
                     type_ident: args.command.type_ident(),
                 })?,
                 |c| ltrait_sorter_frecency::Context {
-                    ident: format!("{}-{}", c.to_string(), Into::<String>::into(c)),
+                    ident: format!("{}-{}", c, Into::<String>::into(c)),
                     bonus: 15.,
                 },
             );
@@ -164,7 +164,7 @@ async fn main() -> Result<()> {
     match args.command {
         Commands::Stdin => {
             pub fn new<'a>() -> ltrait::source::Source<'a, String> {
-                let lines: Vec<_> = io::stdin().lines().filter_map(|c| c.ok()).collect();
+                let lines: Vec<_> = io::stdin().lines().map_while(Result::ok).collect();
 
                 Box::pin(ltrait::tokio_stream::iter(lines))
             }
@@ -245,7 +245,7 @@ async fn main() -> Result<()> {
                         let cmd = t.command.clone();
                         let cmd = cmd.split_whitespace().collect::<Vec<&str>>();
 
-                        Command::new(&cmd[0])
+                        Command::new(cmd[0])
                             .args(&cmd[1..])
                             .stdin(Stdio::null())
                             .stdout(Stdio::null())
