@@ -16,6 +16,7 @@
     inputs@{
       crane,
       flake-parts,
+      self,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -27,7 +28,7 @@
         homeManagerModules = rec {
           default = yurf;
 
-          yurf = ./modules/home-manager/default.nix;
+          yurf = import ./modules/home-manager/default.nix self;
         };
       };
 

@@ -1,3 +1,4 @@
+self:
 {
   config,
   lib,
@@ -41,8 +42,6 @@ let
         };
       };
     };
-
-  yurf = builtins.getFlake ../../.;
 in
 {
   options.programs.yurf = with lib.types; {
@@ -50,7 +49,7 @@ in
 
     package = mkOption {
       type = package;
-      default = yurf.${pkgs.hostPlatform.system}.default;
+      default = self.packages.${pkgs.hostPlatform.system}.default;
     };
 
     task = mkOption {

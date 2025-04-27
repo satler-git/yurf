@@ -188,29 +188,6 @@ async fn main() -> Result<()> {
 
             let config: Config = toml::from_str(&toml_str)?;
 
-            // let tasks = vec![
-            //     Task {
-            //         name: "light: Increase by 10".into(),
-            //         command: "light -A 10".into(),
-            //         need_confirm: false,
-            //     },
-            //     Task {
-            //         name: "light: Decrease by 10".into(),
-            //         command: "light -U 10".into(),
-            //         need_confirm: false,
-            //     },
-            //     Task {
-            //         name: "hyprsunset: reset".into(),
-            //         command: "hyprctl hyprsunset identity".into(),
-            //         need_confirm: false,
-            //     },
-            //     Task {
-            //         name: "hyprsunset: sunset".into(),
-            //         command: "hyprctl hyprsunset temperature 2500".into(),
-            //         need_confirm: false,
-            //     },
-            // ];
-
             launcher = launcher
                 .add_source(
                     Box::pin(ltrait::tokio_stream::iter(config.task)),
