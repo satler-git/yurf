@@ -9,7 +9,7 @@ let
   inherit (lib)
     types
     ;
-  inherit (lib.options) mkEnableOption mkPackageOption mkOption;
+  inherit (lib.options) mkEnableOption mkOption;
 
   cfg = config.programs.yurf;
 
@@ -53,7 +53,7 @@ in
       default = yurf.${pkgs.hostPlatform.system}.default;
     };
 
-    tasks = mkOption {
+    task = mkOption {
       type = listOf tasksConfig;
       default = [ ];
       description = ''
