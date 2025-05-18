@@ -3,6 +3,7 @@ use ltrait::{
     action::ClosureAction,
     color_eyre::{Result, eyre::WrapErr},
     filter::ClosureFilter,
+    sorter::ClosureSorter,
 };
 
 use ltrait_extra::{scorer::ScorerExt as _, sorter::SorterExt as _};
@@ -12,7 +13,7 @@ use ltrait_sorter_frecency::FrecencyConfig;
 use ltrait_source_desktop::DesktopEntry;
 use ltrait_ui_tui::{Tui, TuiConfig, TuiEntry, style::Style};
 
-use std::{io, time::Duration};
+use std::{cmp::Ordering, io, time::Duration};
 
 use tracing::info;
 
@@ -257,6 +258,12 @@ async fn main() -> Result<()> {
                     )),
                     Item::Calc,
                 )
+                .add_raw_sorter(ClosureSorter::new(|lhs, rhs, _| match (lhs, rhs) {
+                    (Item::Calc(_), Item::Calc(_)) => Ordering::Equal,
+                    (Item::Calc(_), _) => Ordering::Greater,
+                    (_, Item::Calc(_)) => Ordering::Less,
+                    _ => Ordering::Equal,
+                }))
                 .add_raw_action(ClosureAction::new(|c| {
                     if let Item::Desktop(d) = c {
                         use std::os::unix::process::CommandExt;
