@@ -1,3 +1,6 @@
+use std::os::unix::process::CommandExt;
+use std::process::{Command, Stdio};
+
 use ltrait::{
     Launcher, Level,
     action::ClosureAction,
@@ -66,6 +69,10 @@ use clap::{Parser, Subcommand};
 struct Args {
     #[command(subcommand)]
     command: Commands,
+
+    /// Copy as a string. Currently only wl-copy is available
+    #[arg(short, long)]
+    copy: bool,
 
     /// Display on full screen on the terminal when TUI
     #[arg(short, long, conflicts_with = "inline")]
@@ -163,6 +170,24 @@ async fn main() -> Result<()> {
             );
     }
 
+    if args.copy {
+        launcher = launcher.add_raw_action(ClosureAction::new(|c| {
+            Command::new("wl-copy")
+                .args([
+                    "--type=text/plain".into(),
+                    format!("{}", <&Item as Into<String>>::into(c)),
+                ])
+                .stdin(Stdio::null())
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .process_group(0)
+                .spawn()
+                .wrap_err("failed to copy")?;
+
+            Ok(())
+        }))
+    }
+
     match args.command {
         Commands::Stdin => {
             pub fn new<'a>() -> ltrait::source::Source<'a, String> {
@@ -198,8 +223,6 @@ async fn main() -> Result<()> {
                 .add_raw_action(ClosureAction::new(|c| {
                     if let Item::Task(t) = c {
                         use std::io::Write;
-                        use std::os::unix::process::CommandExt;
-                        use std::process::{Command, Stdio};
 
                         if t.need_confirm {
                             let exe_path = std::env::current_exe()?;
