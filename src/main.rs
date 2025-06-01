@@ -125,6 +125,7 @@ async fn main() -> Result<()> {
                 } else {
                     ltrait_ui_tui::Viewport::Fullscreen
                 },
+                true,
                 '>',
                 ' ',
                 ltrait_ui_tui::sample_keyconfig,
