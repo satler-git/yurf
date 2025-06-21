@@ -9,12 +9,12 @@ clap = { version = "4.5.32", features = ["derive"] }
 tokio = { version = "1.44.0", features = ["full"] }
 
 ltrait = "1.0.0"
-ltrait-extra = { git = "https://github.com/ltrait/extra" }
+ltrait-extra = "0.1.0"
 ltrait-gen-calc = { git = "https://github.com/ltrait/gen-calc" }
 ltrait-scorer-nucleo = { git = "https://github.com/ltrait/scorer-nucleo" }
 ltrait-sorter-frecency = { git = "https://github.com/ltrait/sorter-frecency" }
-ltrait-source-desktop = "0.3.0"
-ltrait-ui-tui = "0.1.0"
+ltrait-source-desktop = "0.4.0"
+ltrait-ui-tui = "0.1.2"
 # ltrait-ui-tui = { path = "../../ltrait/ui-tui" }
 
 strum = { version = "0.27.1", features = ["derive"] }

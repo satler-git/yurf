@@ -972,9 +972,9 @@ dependencies = [
 
 [[package]]
 name = "freedesktop-icons"
-version = "0.3.1"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72e592df580f8f0e7c48135383e9c0e0d18d9de346b95f9839857fe27a67ad47"
+checksum = "95f87364ea709292a3b3f74014ce3ee78412c89807eea75a358c8e029b000994"
 dependencies = [
  "dirs 5.0.1",
  "ini_core",
@@ -1641,9 +1641,9 @@ dependencies = [
 
 [[package]]
 name = "libsqlite3-sys"
-version = "0.32.0"
+version = "0.34.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fbb8270bb4060bd76c6e96f20c52d80620f1d82a3470885694e41e0f81ef6fe7"
+checksum = "91632f3b4fb6bd1d72aa3d78f41ffecfcf2b1a6648d8c241dbe7dbfaf4875e15"
 dependencies = [
  "cc",
  "pkg-config",
@@ -1741,38 +1741,6 @@ dependencies = [
 
 [[package]]
 name = "ltrait"
-version = "0.8.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "41316331949fb1d50b94eed1417c23c81a1e0fb8e0972bf3f5836d1135d56682"
-dependencies = [
- "async-trait",
- "color-eyre",
- "dirs 6.0.0",
- "futures",
- "tokio-stream",
- "tracing",
- "tracing-appender",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "ltrait"
-version = "0.10.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4bab03b5865020218bb9a970d776f76cad7f816d145f8fb792f2150d514fa17e"
-dependencies = [
- "async-trait",
- "color-eyre",
- "dirs 6.0.0",
- "futures",
- "tokio-stream",
- "tracing",
- "tracing-appender",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "ltrait"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f3642c00fb30c455a5ddeefd213059317879295004b5d4e458d442a44c14aa24"
@@ -1790,27 +1758,28 @@ dependencies = [
 [[package]]
 name = "ltrait-extra"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/extra#b0d03f6972e2bd2614c2ef088811d57345ce0978"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68085e9e528272953a1906ab14c8e1dbb9189bc91d5555391f0fd73eb1adb7e0"
 dependencies = [
- "ltrait 0.10.2",
+ "ltrait",
 ]
 
 [[package]]
 name = "ltrait-gen-calc"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/gen-calc#676b4f6d26f58c887c8ad99b7ee2d295e60245f4"
+source = "git+https://github.com/ltrait/gen-calc#14bdd5b99a027fb596a998b5283afad865ddbff6"
 dependencies = [
  "kalk",
- "ltrait 0.10.2",
+ "ltrait",
  "numbat",
 ]
 
 [[package]]
 name = "ltrait-scorer-nucleo"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/scorer-nucleo#fa8344e0d47c8debc6511b6ce3c2114cf9aad1b1"
+source = "git+https://github.com/ltrait/scorer-nucleo#d4c050259296955a338e9cc987faf1897c5e7406"
 dependencies = [
- "ltrait 0.10.2",
+ "ltrait",
  "ltrait-extra",
  "nucleo-matcher",
  "thiserror 2.0.12",
@@ -1819,37 +1788,37 @@ dependencies = [
 [[package]]
 name = "ltrait-sorter-frecency"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/sorter-frecency#b6293a2817b10c393f4f39473d4934ec99f3c5a2"
+source = "git+https://github.com/ltrait/sorter-frecency#442fa3ce67441405787522ccdf93abbf65382b41"
 dependencies = [
  "chrono",
  "dirs 6.0.0",
- "ltrait 0.10.2",
+ "ltrait",
  "rusqlite",
 ]
 
 [[package]]
 name = "ltrait-source-desktop"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9d238d1c3a6afa24c0e5f217d0d8367fdae1cd3d9fd11275a978897005ca37f9"
+checksum = "af8eb1f43fc090a01913c17fd00bab60a7593d21265a4f64eb56ac5148cd7ae9"
 dependencies = [
  "base64",
  "freedesktop-desktop-entry",
  "freedesktop-icons",
  "image",
- "ltrait 0.8.5",
+ "ltrait",
  "thiserror 2.0.12",
 ]
 
 [[package]]
 name = "ltrait-ui-tui"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d36b4cc75cbfadafa8a64abd6a9bd4a3612e3f1fa3cb1f617956f4b33b735cf6"
+checksum = "1a2b4de203ca3536dba6f31462e754dd1678be37032295ab616d77103bb1732e"
 dependencies = [
  "crossterm 0.29.0",
  "futures",
- "ltrait 0.10.2",
+ "ltrait",
  "ratatui 0.29.0",
  "tokio",
  "tracing",
@@ -2876,9 +2845,9 @@ dependencies = [
 
 [[package]]
 name = "rusqlite"
-version = "0.34.0"
+version = "0.36.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "37e34486da88d8e051c7c0e23c3f15fd806ea8546260aa2fec247e97242ec143"
+checksum = "3de23c3319433716cf134eed225fe9986bc24f63bed9be9f20c329029e672dc7"
 dependencies = [
  "bitflags 2.9.1",
  "chrono",
@@ -4435,7 +4404,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "dirs 6.0.0",
- "ltrait 1.0.0",
+ "ltrait",
  "ltrait-extra",
  "ltrait-gen-calc",
  "ltrait-scorer-nucleo",
