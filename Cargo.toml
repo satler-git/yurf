@@ -14,7 +14,7 @@ ltrait-gen-calc = { git = "https://github.com/ltrait/gen-calc" }
 ltrait-scorer-nucleo = { git = "https://github.com/ltrait/scorer-nucleo" }
 ltrait-sorter-frecency = { git = "https://github.com/ltrait/sorter-frecency" }
 ltrait-source-desktop = "0.3.0"
-ltrait-ui-tui = { git = "https://github.com/ltrait/ui-tui" }
+ltrait-ui-tui = "0.1.0"
 # ltrait-ui-tui = { path = "../../ltrait/ui-tui" }
 
 strum = { version = "0.27.1", features = ["derive"] }
