@@ -1772,6 +1772,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "ltrait"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f3642c00fb30c455a5ddeefd213059317879295004b5d4e458d442a44c14aa24"
+dependencies = [
+ "async-trait",
+ "color-eyre",
+ "dirs 6.0.0",
+ "futures",
+ "tokio-stream",
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "ltrait-extra"
 version = "0.1.0"
 source = "git+https://github.com/ltrait/extra#b0d03f6972e2bd2614c2ef088811d57345ce0978"
@@ -1827,9 +1843,9 @@ dependencies = [
 
 [[package]]
 name = "ltrait-ui-tui"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "443db8d191c036f44d45a79e0b9842dfbb389d51793374ec1c22eb2540752dea"
+checksum = "d36b4cc75cbfadafa8a64abd6a9bd4a3612e3f1fa3cb1f617956f4b33b735cf6"
 dependencies = [
  "crossterm 0.29.0",
  "futures",
@@ -4419,7 +4435,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "dirs 6.0.0",
- "ltrait 0.10.2",
+ "ltrait 1.0.0",
  "ltrait-extra",
  "ltrait-gen-calc",
  "ltrait-scorer-nucleo",
