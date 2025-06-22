@@ -1776,8 +1776,9 @@ dependencies = [
 
 [[package]]
 name = "ltrait-scorer-nucleo"
-version = "0.1.0"
-source = "git+https://github.com/ltrait/scorer-nucleo#d4c050259296955a338e9cc987faf1897c5e7406"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "462f299044e744245da2c4f0129a051bb12f4b8baf0209fabe17e8d3cf33508b"
 dependencies = [
  "ltrait",
  "ltrait-extra",

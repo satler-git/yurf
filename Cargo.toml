@@ -11,11 +11,10 @@ tokio = { version = "1.44.0", features = ["full"] }
 ltrait = "1.0.0"
 ltrait-extra = "0.1.0"
 ltrait-gen-calc = { git = "https://github.com/ltrait/gen-calc" }
-ltrait-scorer-nucleo = { git = "https://github.com/ltrait/scorer-nucleo" }
+ltrait-scorer-nucleo = "0.1.1"
 ltrait-sorter-frecency = { git = "https://github.com/ltrait/sorter-frecency" }
 ltrait-source-desktop = "0.4.0"
 ltrait-ui-tui = "0.1.2"
-# ltrait-ui-tui = { path = "../../ltrait/ui-tui" }
 
 strum = { version = "0.27.1", features = ["derive"] }
 tracing = "0.1.41"
@@ -26,6 +25,3 @@ dirs = "6.0.0"
 
 [profile.dev.package]
 tikv-jemalloc-sys = { opt-level = 3 }
-
-[patch.crates-io]
-# ltrait = { git = "https://github.com/ltrait/core" }
