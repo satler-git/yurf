@@ -10,7 +10,7 @@ tokio = { version = "1.44.0", features = ["full"] }
 
 ltrait = "1.1.0"
 ltrait-extra = "0.1.0"
-ltrait-gen-calc = { git = "https://github.com/ltrait/gen-calc" }
+ltrait-gen-calc = "0.1.0"
 ltrait-scorer-nucleo = "0.1.1"
 ltrait-sorter-frecency = "0.1.0"
 ltrait-source-desktop = "0.4.0"

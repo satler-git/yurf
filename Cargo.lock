@@ -1752,9 +1752,9 @@ dependencies = [
 
 [[package]]
 name = "ltrait"
-version = "1.1.0"
+version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25bdc481857b2e4be81079fb0773e7c91f2f036926d49c431bf4d0c3bf56bd41"
+checksum = "8eafab4045dbbde31baaee99a1a74c6dfa9bc31b8930f79b986513db4b882f92"
 dependencies = [
  "async-trait",
  "color-eyre",
@@ -1778,7 +1778,8 @@ dependencies = [
 [[package]]
 name = "ltrait-gen-calc"
 version = "0.1.0"
-source = "git+https://github.com/ltrait/gen-calc#14bdd5b99a027fb596a998b5283afad865ddbff6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ac2bbd428844a8d3f669923e7cc796332100e93c6f8b160e6a0c838e97320ad6"
 dependencies = [
  "kalk",
  "ltrait",
@@ -1787,9 +1788,9 @@ dependencies = [
 
 [[package]]
 name = "ltrait-scorer-nucleo"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "462f299044e744245da2c4f0129a051bb12f4b8baf0209fabe17e8d3cf33508b"
+checksum = "0ed87cdbe83109ced56e032cfcbb735ecb7d6686f306f9289ff4ae614154ec53"
 dependencies = [
  "ltrait",
  "ltrait-extra",
@@ -1811,9 +1812,9 @@ dependencies = [
 
 [[package]]
 name = "ltrait-source-desktop"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "af8eb1f43fc090a01913c17fd00bab60a7593d21265a4f64eb56ac5148cd7ae9"
+checksum = "aec0e699c8f1d310b000dbc3bf35ffb2b3e72d77b2b1b53d7092b94b379c3cf2"
 dependencies = [
  "base64",
  "freedesktop-desktop-entry",
