@@ -110,6 +110,13 @@ async fn main() -> Result<()> {
     info!("Tracing has been installed");
 
     let mut launcher = Launcher::default()
+        .add_raw_sorter(ClosureSorter::new(|lhs, rhs, _| match (lhs, rhs) {
+            // 優先する
+            (Item::Calc(_), Item::Calc(_)) => Ordering::Equal,
+            (Item::Calc(_), _) => Ordering::Greater,
+            (_, Item::Calc(_)) => Ordering::Less,
+            _ => Ordering::Equal,
+        }))
         .add_raw_sorter(
             ltrait_scorer_nucleo::NucleoMatcher::new(
                 false,
@@ -151,8 +158,7 @@ async fn main() -> Result<()> {
 
         launcher = launcher
             .add_raw_sorter(
-                ltrait_sorter_frecency::Frecency::new(config.clone())?
-                .to_if(
+                ltrait_sorter_frecency::Frecency::new(config.clone())?.to_if(
                     |c| !Item::is_calc(c),
                     |c: &Item| ltrait_sorter_frecency::Context {
                         ident: format!("{}-{}", c, Into::<String>::into(c)),
@@ -160,13 +166,12 @@ async fn main() -> Result<()> {
                     },
                 ),
             )
-            .add_action(
-                ltrait_sorter_frecency::Frecency::new(config)?,
-                |c| ltrait_sorter_frecency::Context {
+            .add_action(ltrait_sorter_frecency::Frecency::new(config)?, |c| {
+                ltrait_sorter_frecency::Context {
                     ident: format!("{}-{}", c, Into::<String>::into(c)),
                     bonus: 15.,
-                },
-            );
+                }
+            });
     }
 
     if args.copy {
@@ -281,12 +286,6 @@ async fn main() -> Result<()> {
                     )),
                     Item::Calc,
                 )
-                .add_raw_sorter(ClosureSorter::new(|lhs, rhs, _| match (lhs, rhs) {
-                    (Item::Calc(_), Item::Calc(_)) => Ordering::Equal,
-                    (Item::Calc(_), _) => Ordering::Greater,
-                    (_, Item::Calc(_)) => Ordering::Less,
-                    _ => Ordering::Equal,
-                }))
                 .add_raw_action(ClosureAction::new(|c| {
                     if let Item::Desktop(d) = c {
                         use std::os::unix::process::CommandExt;
