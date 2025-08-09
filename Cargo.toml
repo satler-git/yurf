@@ -8,11 +8,11 @@ clap = { version = "4.5.32", features = ["derive"] }
 
 tokio = { version = "1.44.0", features = ["full"] }
 
-ltrait = "1.0.0"
+ltrait = "1.1.0"
 ltrait-extra = "0.1.0"
 ltrait-gen-calc = { git = "https://github.com/ltrait/gen-calc" }
 ltrait-scorer-nucleo = "0.1.1"
-ltrait-sorter-frecency = { git = "https://github.com/ltrait/sorter-frecency" }
+ltrait-sorter-frecency = "0.1.0"
 ltrait-source-desktop = "0.4.0"
 ltrait-ui-tui = "0.1.2"
 
@@ -20,7 +20,7 @@ strum = { version = "0.27.1", features = ["derive"] }
 tracing = "0.1.41"
 tikv-jemallocator = "0.6.0"
 serde = { version = "1.0.219", features = ["derive"] }
-toml = "0.8.21"
+toml = "0.9.0"
 dirs = "6.0.0"
 
 [profile.dev.package]
