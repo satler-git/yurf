@@ -143,13 +143,15 @@ async fn main() -> Result<()> {
         );
 
     if !args.command.is_stdin() {
+        let config = FrecencyConfig {
+            // Duration::from_secs(days * MINS_PER_HOUR * SECS_PER_MINUTE * HOURS_PER_DAY)
+            half_life: Duration::from_secs(30 * 60 * 60 * 24),
+            type_ident: args.command.type_ident(),
+        };
+
         launcher = launcher
             .add_raw_sorter(
-                ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
-                    // Duration::from_secs(days * MINS_PER_HOUR * SECS_PER_MINUTE * HOURS_PER_DAY)
-                    half_life: Duration::from_secs(30 * 60 * 60 * 24),
-                    type_ident: args.command.type_ident(),
-                })?
+                ltrait_sorter_frecency::Frecency::new(config)?
                 .to_if(
                     |c| !Item::is_calc(c),
                     |c: &Item| ltrait_sorter_frecency::Context {
@@ -159,10 +161,7 @@ async fn main() -> Result<()> {
                 ),
             )
             .add_action(
-                ltrait_sorter_frecency::Frecency::new(FrecencyConfig {
-                    half_life: Duration::from_secs(30 * 60 * 60 * 24),
-                    type_ident: args.command.type_ident(),
-                })?,
+                ltrait_sorter_frecency::Frecency::new(config)?,
                 |c| ltrait_sorter_frecency::Context {
                     ident: format!("{}-{}", c, Into::<String>::into(c)),
                     bonus: 15.,
