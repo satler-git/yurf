@@ -151,7 +151,7 @@ async fn main() -> Result<()> {
 
         launcher = launcher
             .add_raw_sorter(
-                ltrait_sorter_frecency::Frecency::new(config)?
+                ltrait_sorter_frecency::Frecency::new(config.clone())?
                 .to_if(
                     |c| !Item::is_calc(c),
                     |c: &Item| ltrait_sorter_frecency::Context {
