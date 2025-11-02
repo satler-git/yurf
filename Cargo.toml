@@ -8,20 +8,18 @@ clap = { version = "4.5.32", features = ["derive"] }
 
 tokio = { version = "1.44.0", features = ["full"] }
 
-ltrait = "1.2.0"
-ltrait-extra = "0.2.0"
+ltrait = "=1.5.0"
+ltrait-extra = "=0.4.1"
 ltrait-gen-calc = "0.2.0"
-ltrait-scorer-nucleo = "0.3.0"
-ltrait-sorter-frecency = "0.2.0"
-ltrait-source-desktop = "0.5.0"
-ltrait-ui-tui = "0.3.3"
+ltrait-scorer-nucleo = "=0.5.0"
+ltrait-sorter-frecency = "=0.3.0"
+ltrait-source-desktop = "=0.7.0"
+ltrait-ui-tui = "=0.5.0"
+ltrait-source-task = "=0.1.0"
 
 strum = { version = "0.27.1", features = ["derive"] }
 tracing = "0.1.41"
 tikv-jemallocator = "0.6.0"
-serde = { version = "1.0.219", features = ["derive"] }
-toml = "0.9.0"
-dirs = "6.0.0"
 
 [profile.dev.package]
 tikv-jemalloc-sys = { opt-level = 3 }

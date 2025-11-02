@@ -9,11 +9,12 @@ use ltrait::{
     sorter::ClosureSorter,
 };
 
-use ltrait_extra::{scorer::ScorerExt as _, sorter::SorterExt as _};
+use ltrait_extra::{action::ActionExt as _, scorer::ScorerExt as _, sorter::SorterExt};
 use ltrait_gen_calc::{Calc, CalcConfig};
 use ltrait_scorer_nucleo::{CaseMatching, Context};
-use ltrait_sorter_frecency::FrecencyConfig;
+use ltrait_sorter_frecency::{Frecency, FrecencyConfig};
 use ltrait_source_desktop::DesktopEntry;
+use ltrait_source_task::{Task, TaskConfig, TaskItem};
 use ltrait_ui_tui::{Tui, TuiConfig, TuiEntry, style::Style};
 
 use std::{cmp::Ordering, io, time::Duration};
@@ -24,26 +25,12 @@ use tikv_jemallocator::Jemalloc;
 #[global_allocator]
 static GLOBAL: Jemalloc = Jemalloc;
 
-use serde::Deserialize;
-
-#[derive(Debug, Clone, Deserialize)]
-struct Task {
-    name: String,
-    command: String,
-    need_confirm: bool,
-}
-
-#[derive(Deserialize, Debug)]
-struct Config {
-    task: Vec<Task>,
-}
-
-#[derive(strum::Display, strum::EnumIs, Clone)]
+#[derive(strum::Display, strum::EnumIs, strum::EnumTryAs, Clone)]
 enum Item {
     Desktop(DesktopEntry),
     Calc(String),
     Stdin(String),
-    Task(Task),
+    Task(TaskItem),
 }
 
 impl From<&Item> for String {
@@ -157,16 +144,15 @@ async fn main() -> Result<()> {
         };
 
         launcher = launcher
-            .add_raw_sorter(
-                ltrait_sorter_frecency::Frecency::new(config.clone())?.to_if(
-                    |c| !Item::is_calc(c),
-                    |c: &Item| ltrait_sorter_frecency::Context {
-                        ident: format!("{}-{}", c, Into::<String>::into(c)),
-                        bonus: 15.,
-                    },
-                ),
-            )
-            .add_action(ltrait_sorter_frecency::Frecency::new(config)?, |c| {
+            .add_raw_sorter(SorterExt::to_if(
+                Frecency::new(config.clone())?,
+                |c| !Item::is_calc(c),
+                |c: &Item| ltrait_sorter_frecency::Context {
+                    ident: format!("{}-{}", c, Into::<String>::into(c)),
+                    bonus: 15.,
+                },
+            ))
+            .add_action(Frecency::new(config)?, |c| {
                 ltrait_sorter_frecency::Context {
                     ident: format!("{}-{}", c, Into::<String>::into(c)),
                     bonus: 15.,
@@ -194,7 +180,7 @@ async fn main() -> Result<()> {
 
     match args.command {
         Commands::Stdin => {
-            pub fn new<'a>() -> ltrait::source::Source<'a, String> {
+            pub fn new() -> ltrait::source::Source<String> {
                 let lines: Vec<_> = io::stdin().lines().map_while(Result::ok).collect();
 
                 Box::pin(ltrait::tokio_stream::iter(lines))
@@ -208,61 +194,15 @@ async fn main() -> Result<()> {
                 }));
         }
         Commands::Task => {
-            // TODO: 将来的にはWaylougoutみたいなやつのreplace
-            // TODO: confirmは落ちる。popupみたいな感じにするかいい感じにしないとだめ。
-            let cfg = dirs::config_dir()
-                .expect("Could not find config directory")
-                .join("yurf")
-                .join("config.toml");
+            let config = TaskConfig {
+                path: vec![ltrait_source_task::default_path()?],
+            };
 
-            let toml_str = std::fs::read_to_string(cfg).unwrap_or_default();
-
-            let config: Config = toml::from_str(&toml_str)?;
+            let task = Task::new(config);
 
             launcher = launcher
-                .add_source(
-                    Box::pin(ltrait::tokio_stream::iter(config.task)),
-                    Item::Task,
-                )
-                .add_raw_action(ClosureAction::new(|c| {
-                    if let Item::Task(t) = c {
-                        use std::io::Write;
-
-                        if t.need_confirm {
-                            let exe_path = std::env::current_exe()?;
-
-                            let mut child = Command::new(&exe_path)
-                                .arg("stdin")
-                                .stdin(Stdio::piped())
-                                .stdout(Stdio::piped())
-                                .spawn()?;
-
-                            if let Some(mut stdin) = child.stdin.take() {
-                                stdin.write_all(b"yes\nno")?;
-                            }
-                            let output = child.wait_with_output()?;
-                            let stdout_str =
-                                String::from_utf8(output.stdout).expect("Invalid UTF-8 in stdout");
-                            if &stdout_str != "yes\n" {
-                                return Ok(());
-                            }
-                        }
-
-                        let cmd = t.command.clone();
-                        let cmd = cmd.split_whitespace().collect::<Vec<&str>>();
-
-                        Command::new(cmd[0])
-                            .args(&cmd[1..])
-                            .stdin(Stdio::null())
-                            .stdout(Stdio::null())
-                            .stderr(Stdio::null())
-                            .process_group(0)
-                            .spawn()
-                            .wrap_err("failed to start the selected app")?;
-                    }
-
-                    Ok(())
-                }));
+                .add_source(task.create_source()?, Item::Task)
+                .add_raw_action(task.to_if(Item::is_task, |c| c.clone().try_as_task().unwrap()));
         }
         Commands::Launch => {
             launcher = launcher
