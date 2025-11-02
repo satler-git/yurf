@@ -34,11 +34,11 @@ let
           description = "Command to execute when selected.";
         };
 
-        need_confirm = mkOption {
-          type = bool;
-          default = false;
-          example = true;
-          description = "need confirm to run";
+        show_if = mkOption {
+          type = nullOr str;
+          default = null;
+          example = "[ \"$XDG_CURRENT_DESKTOP\" = \"niri\" ]";
+          description = "Command to determine whether the item will be shown.";
         };
       };
     };
@@ -49,7 +49,7 @@ in
 
     package = mkOption {
       type = package;
-      default = self.packages.${pkgs.hostPlatform.system}.default;
+      default = self.packages.${pkgs.stdenv.hostPlatform.system}.default;
     };
 
     task = mkOption {
