@@ -36,7 +36,7 @@ let
 
         show_if = mkOption {
           type = nullOr str;
-          default = null;
+          default = "true";
           example = "[ \"$XDG_CURRENT_DESKTOP\" = \"niri\" ]";
           description = "Command to determine whether the item will be shown.";
         };
