@@ -71,7 +71,7 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = [ cfg.package ];
-    xdg.configFile."yurf/config.toml" = {
+    xdg.configFile."yurf/task.toml" = {
       source = pkgs.writers.writeTOML "yurf-config.toml" {
         inherit (cfg) task;
       };
